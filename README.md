@@ -1,2 +1,2 @@
 # CRA-Training
-This repository contains materials for the CRA Training Course
+This repository contains materials for the CRA Training Course.
