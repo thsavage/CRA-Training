@@ -173,7 +173,7 @@ plt.axhline(0, color='r', ls='--', lw=2.0)
 #             * These generally create *point estimates* and *standard errors* of impacts.
 #     * Computer scientists: the probabilistic prediction of an unlabeled input, such as whether **this unlabeled email is spam with probrability 0.492**.
 #         * Can we teach a machine **to recognize accurately** hand-written digits?
-#         * Can ew teach a machine **to generate accurately** prose?
+#         * Can we teach a machine **to generate accurately** prose?
 #     
 #     
 #     
@@ -246,6 +246,10 @@ sns.set(context='notebook', style='whitegrid', palette='deep', font='sans-serif'
 from mpl_toolkits.mplot3d import Axes3D
 from scipy.optimize import minimize
 
+
+# ### Example 1
+# 
+# $f(x1,x2)=−2x21−x22+x1+x2$
 
 # In[6]:
 
@@ -411,25 +415,10 @@ sales.head()
 
 # #### Notes
 # * Let's examine summary statistics of the numeric features: **Know your data**.
-# 
-# 
-# 
 # * Borough has mean 5.0 and standard deviation 0.  Does this make sense?
-# 
-# 
-# 
 # * Block and Lot have a minimum value of 1, which is odd, as is Zip Code of 0.
-# 
-# 
-# 
 # * Some houses have 0 residential units, which is also odd.
-# 
-# 
-# 
 # * 0 square footage (or 0 square meters) is also odd.
-# 
-# 
-# 
 # * Lots of zero price sales.
 
 # In[18]:
@@ -474,13 +463,7 @@ sales.describe()
 
 # #### Notes
 # * Often we only need a subset of the data and want to rename columns.
-# 
-# 
-# 
 # * First line of code restricts the dataframe to specifc fields (or variables or columns).
-# 
-# 
-# 
 # * Second line of code renames the features we wish to use.
 
 # In[21]:
@@ -548,9 +531,9 @@ fred = Fred(api_key='30e6ecb242a73869e11cb35f6aa3afc3')
 # In[28]:
 
 
-ten_year = fred.get_series("DGS10", observation_start='1990-01-01')
-one_year = fred.get_series("DGS1", observation_start='1990-01-01')
-three_month = fred.get_series("DGS3MO", observation_start='1990-01-01')
+ten_year = fred.get_series("DGS10", observation_start='1990-01-01').dropna()
+one_year = fred.get_series("DGS1", observation_start='1990-01-01').dropna()
+three_month = fred.get_series("DGS3MO", observation_start='1990-01-01').dropna()
 
 ten_year.plot(color='darkblue', figsize=(8, 6))
 plt.suptitle('Long Duration Rates Have Been Falling', fontsize=20)
@@ -682,6 +665,10 @@ plt.title('Positive Correlation', fontsize=20)
 #     * A model is is trained and built on the train set and is evaluated on the test set using some type of regression diagnostic. 
 #     * Repeat $k$ times where each time the train set and the test set end up being different. 
 #     * $k$ models are built and evaluated resulting in $k$ different diagnostics, whose average is the cross validation score.
+# 
+# 
+#     
+# * Practically, we might split our data into three parts: train, test and validation sets.
 
 # ## An Algorithm: Logit, the Confusion Matrix and Area Under the ROC Curve (AUC)
 
@@ -977,6 +964,8 @@ print(tabulate(table, tablefmt="fancy_grid", numalign="center"))
 # 
 # * The Accuary Rate is (TN + TP) / (TN + FP + FN + TP) and measures the overall accuracy rate of the classification algorithm
 
+# ### The Discriminant Threshold: Human Instruct the Machine
+
 # In[45]:
 
 
@@ -1231,7 +1220,7 @@ plt.axhline(y=0, linewidth=5, color='k')
 #     
 #     
 #     
-# * Newer techniques such as Random Forests or Neural Networks have more power OOS, but we lose the ability to interpret the results.
+# * Newer techniques such as Random Forests or XGBoost have more power OOS, but we lose the ability to interpret the results.
 #     * Why split here or there?  
 #     * An objective function that is maximized but faces multiple local optima with no reason to believe there is a global optimum.
 #     * Not a "$M^3$ estimator".
@@ -1404,12 +1393,7 @@ print("The Mean Squared Error is", MSE)
 
 # #### Notes
 # * Substantial improvement in accuracy by increasing the number of trees to 10.  
-# 
-# 
 # * Improved classification of types 1 and 2, but decreased accuracy of classification of type 3.
-# 
-# 
-# 
 # * XGBoost has an accuracy of 574 bps without computation expense on the margin.
 #     * What is $10^9$ times 33 bps?
 
@@ -1417,6 +1401,7 @@ print("The Mean Squared Error is", MSE)
 
 
 # Now go to 100 trees.
+
 clf = ensemble.GradientBoostingClassifier(n_estimators=100, learning_rate=0.1, random_state=0)
 
 clf.fit(Xtrain, ytrain)
@@ -1447,6 +1432,7 @@ print("The Mean Squared Error is", MSE)
 
 
 # 10 trees but increase the number of features used per tree.
+
 clf = ensemble.GradientBoostingClassifier(n_estimators=10, learning_rate=0.1, max_features=4, random_state=0)
 
 clf.fit(Xtrain, ytrain)
@@ -1477,6 +1463,7 @@ print("The Mean Squared Error is", MSE)
 
 
 # 100 trees and four features
+
 clf = ensemble.GradientBoostingClassifier(n_estimators=100, learning_rate=0.1, max_features=4, random_state=0)
 
 clf.fit(Xtrain, ytrain)
@@ -1510,6 +1497,33 @@ from IPython.display import Image
 url = 'https://scikit-learn.org/stable/_images/sphx_glr_plot_gradient_boosting_regularization_001.png'
 Image(url, width=800, height=800)
 
+
+# ## Why Does This Matter? 
+# * Consider the following measure of firm profits of a lender: $\Pi = R(L) - C(L)$
+#     * Revenues and costs are driven by the number of loans, $L$, orginated in a competitive lending market where no firm can exercise market power and ignores the activity of its competitors.  
+#     * $R'(L) \ge 0$ and $C'(L) \le 0$ 
+#     * Ideally, a lender finds the optimal number of loans, $L^*$, by equating $R'(L)$ and $C'(L)$.
+#         * The lender knows only a limited amount of information about the borrower and the risk of lending, which drives lending costs, $C(L)$.
+#         * As a result, the lender uses an algorithm (or model) to determine the number of loans, $\hat L$, that it should originate, called the baseline, which might be a coin flip with an accuracy of 50%.  
+#     * **To the extent that $L^* < \hat L$, the firm is foregoing profitable lending**.  
+#     * CRA is retained (at no expense) to develop a new algorithm to improve lending decisions.
+#         * The new algorithm has an accuracy of 80%, thus increasing the number of loans originated and profits.
+#         
+#         
+#         
+# * This simple example can be improved in several ways, but the point is clear: improved algorithm (or model) accuracy increases profits.
+#     * How to improve?
+#         * Include the ideas discussed in class.
+#             * Baseline might not be 50% but a prior model.
+#             * Use a train/test/validation approach, in which the validation sample is only used once to assess model quality.
+#             * Use "swap in/swap out" analysis to determine the opportunity costs (in both directions) of model accuracy.
+#             * Make some assumptions about profitability and risk that inform $R(L)$ and $C(L)$. 
+# 
+# 
+# 
+# * It then becomes possible to make the following statement (depending on your audience):
+#     * C-Suite: Our model is better than yours and increases total profits by X dollars.
+#     * Modelers: Our model is fully documented.  For every basis point improvement in accuracy, your profits increase by Y dollars (accounting for both revenue and loss severity), and we improved your model's accuracy by Z bps.  Now let's look at some Shapely plots. 
 
 # ## If Interested: A Brief Introduction to Neural Networks
 
@@ -1729,7 +1743,7 @@ print(datatest.head(20))
 # * The MLP improves the performance of the algorithm considerably.
 # * It can be implemented with little computational burden.
 
-# In[90]:
+# In[89]:
 
 
 get_ipython().system('jupyter nbconvert --to script "CRA Course Day 1.ipynb"')
