@@ -26,6 +26,7 @@
 #     * develop fair-lending models using algorithms.
 #     * develop an understanding of the limitations any statistical analysis faces.
 #     * develop an understanding of the regulatory environment and the critical role of documentation.
+#     * develop an understanding of why this matters to lenders.
 # 
 # 
 # 
@@ -1523,7 +1524,11 @@ Image(url, width=800, height=800)
 # 
 # * It then becomes possible to make the following statement (depending on your audience):
 #     * C-Suite: Our model is better than yours and increases total profits by X dollars.
-#     * Modelers: Our model is fully documented.  For every basis point improvement in accuracy, your profits increase by Y dollars (accounting for both revenue and loss severity), and we improved your model's accuracy by Z bps.  Now let's look at some Shapely plots. 
+#     * Modelers: Our model is fully documented.  For every basis point improvement in accuracy, your profits increase by Y dollars (accounting for both revenue and loss severity), and we improved your model's accuracy by Z bps.  Now let's look at some Shapely plots.
+#     
+#     
+#     
+# * The role of "swap-in/swap-out" analysis. 
 
 # ## If Interested: A Brief Introduction to Neural Networks
 
